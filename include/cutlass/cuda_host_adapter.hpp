@@ -88,6 +88,17 @@ namespace cutlass {
 #include <cudaTypedefs.h>
 #include <driver_types.h>
 
+// Some CUDA toolchains may not provide PFN_cuTensorMapEncode* typedefs (or only
+// provide versioned ones). For the entrypoint-lookup path we only need a
+// function-pointer type that matches the driver symbol signature. If the PFN_*
+// typedefs are missing, derive them directly from the driver API declarations.
+#if !defined(PFN_cuTensorMapEncodeTiled)
+using PFN_cuTensorMapEncodeTiled = decltype(&cuTensorMapEncodeTiled);
+#endif
+#if !defined(PFN_cuTensorMapEncodeIm2col)
+using PFN_cuTensorMapEncodeIm2col = decltype(&cuTensorMapEncodeIm2col);
+#endif
+
 // CUDA 12.x/13.x may only provide versioned typedefs
 // (e.g. PFN_cuTensorMapEncodeTiled_v13000). Provide unversioned aliases so
 // CUTLASS_CUDA_DRIVER_WRAPPER_DECL (non-ByVersion path) compiles.
@@ -177,10 +188,13 @@ namespace cutlass {
 
 #endif // defined(CUTLASS_ENABLE_DIRECT_CUDA_DRIVER_CALL)
 
-#if ((CUDACC_VER_MAJOR > 12) || (CUDACC_VER_MAJOR == 12 && CUDACC_VER_MINOR >= 5))
+// NOTE: TensorMap encode entrypoints exist across CUDA 12.x, but
+// cudaGetDriverEntryPointByVersion is only available in newer toolkits (>= 12.5).
+// The wrapper macro above selects the correct lookup function based on toolkit
+// version. We must still *declare* the wrapper whenever TensorMap is enabled,
+// otherwise downstream TMA helpers (e.g. cute copy_traits_sm90_tma) fail to compile.
 CUTLASS_CUDA_DRIVER_WRAPPER_DECL(cuTensorMapEncodeTiled, 12000);
 CUTLASS_CUDA_DRIVER_WRAPPER_DECL(cuTensorMapEncodeIm2col, 12000);
-#endif // (CUDACC_VER_MAJOR > 12) || (CUDACC_VER_MAJOR == 12 && CUDACC_VER_MINOR >= 5)
 
 #undef CUTLASS_CUDA_DRIVER_STRINGIFY
 
