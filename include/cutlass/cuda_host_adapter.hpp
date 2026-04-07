@@ -135,7 +135,7 @@ namespace cutlass {
 
 #else // defined(CUTLASS_ENABLE_DIRECT_CUDA_DRIVER_CALL)
 
-if ((CUDACC_VER_MAJOR > 12) || (CUDACC_VER_MAJOR == 12 && CUDACC_VER_MINOR >= 5))
+#if ((CUDACC_VER_MAJOR > 12) || (CUDACC_VER_MAJOR == 12 && CUDACC_VER_MINOR >= 5))
 
 #define CUTLASS_CUDA_DRIVER_WRAPPER_DECL(func, ver)             \
   template <typename... Args>                                   \
@@ -173,14 +173,14 @@ if ((CUDACC_VER_MAJOR > 12) || (CUDACC_VER_MAJOR == 12 && CUDACC_VER_MINOR >= 5)
     return reinterpret_cast<PFN_##func>(pfn)(args...);          \
   }
 
-#endif // (__CUDACC_VER_MAJOR__ >= 12 && __CUDACC_VER_MINOR__ >= 5)
+#endif // (CUDACC_VER_MAJOR > 12) || (CUDACC_VER_MAJOR == 12 && CUDACC_VER_MINOR >= 5)
 
 #endif // defined(CUTLASS_ENABLE_DIRECT_CUDA_DRIVER_CALL)
 
-if ((CUDACC_VER_MAJOR > 12) || (CUDACC_VER_MAJOR == 12 && CUDACC_VER_MINOR >= 5))
+#if ((CUDACC_VER_MAJOR > 12) || (CUDACC_VER_MAJOR == 12 && CUDACC_VER_MINOR >= 5))
 CUTLASS_CUDA_DRIVER_WRAPPER_DECL(cuTensorMapEncodeTiled, 12000);
 CUTLASS_CUDA_DRIVER_WRAPPER_DECL(cuTensorMapEncodeIm2col, 12000);
-#endif
+#endif // (CUDACC_VER_MAJOR > 12) || (CUDACC_VER_MAJOR == 12 && CUDACC_VER_MINOR >= 5)
 
 #undef CUTLASS_CUDA_DRIVER_STRINGIFY
 
