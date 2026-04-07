@@ -88,6 +88,41 @@ namespace cutlass {
 #include <cudaTypedefs.h>
 #include <driver_types.h>
 
+// CUDA 12.x/13.x may only provide versioned typedefs
+// (e.g. PFN_cuTensorMapEncodeTiled_v13000). Provide unversioned aliases so
+// CUTLASS_CUDA_DRIVER_WRAPPER_DECL (non-ByVersion path) compiles.
+#if !defined(PFN_cuTensorMapEncodeTiled)
+#if defined(PFN_cuTensorMapEncodeTiled_v12000)
+#define PFN_cuTensorMapEncodeTiled PFN_cuTensorMapEncodeTiled_v12000
+#elif defined(PFN_cuTensorMapEncodeTiled_v13000)
+#define PFN_cuTensorMapEncodeTiled PFN_cuTensorMapEncodeTiled_v13000
+#elif defined(PFN_cuTensorMapEncodeTiled_v13010)
+#define PFN_cuTensorMapEncodeTiled PFN_cuTensorMapEncodeTiled_v13010
+#elif defined(PFN_cuTensorMapEncodeTiled_v13020)
+#define PFN_cuTensorMapEncodeTiled PFN_cuTensorMapEncodeTiled_v13020
+#elif defined(PFN_cuTensorMapEncodeTiled_v13030)
+#define PFN_cuTensorMapEncodeTiled PFN_cuTensorMapEncodeTiled_v13030
+#elif defined(PFN_cuTensorMapEncodeTiled_v13040)
+#define PFN_cuTensorMapEncodeTiled PFN_cuTensorMapEncodeTiled_v13040
+#endif
+#endif
+
+#if !defined(PFN_cuTensorMapEncodeIm2col)
+#if defined(PFN_cuTensorMapEncodeIm2col_v12000)
+#define PFN_cuTensorMapEncodeIm2col PFN_cuTensorMapEncodeIm2col_v12000
+#elif defined(PFN_cuTensorMapEncodeIm2col_v13000)
+#define PFN_cuTensorMapEncodeIm2col PFN_cuTensorMapEncodeIm2col_v13000
+#elif defined(PFN_cuTensorMapEncodeIm2col_v13010)
+#define PFN_cuTensorMapEncodeIm2col PFN_cuTensorMapEncodeIm2col_v13010
+#elif defined(PFN_cuTensorMapEncodeIm2col_v13020)
+#define PFN_cuTensorMapEncodeIm2col PFN_cuTensorMapEncodeIm2col_v13020
+#elif defined(PFN_cuTensorMapEncodeIm2col_v13030)
+#define PFN_cuTensorMapEncodeIm2col PFN_cuTensorMapEncodeIm2col_v13030
+#elif defined(PFN_cuTensorMapEncodeIm2col_v13040)
+#define PFN_cuTensorMapEncodeIm2col PFN_cuTensorMapEncodeIm2col_v13040
+#endif
+#endif
+
 #define CUTLASS_CUDA_DRIVER_STRINGIFY(tok) #tok
 
 #if defined(CUTLASS_ENABLE_DIRECT_CUDA_DRIVER_CALL)
